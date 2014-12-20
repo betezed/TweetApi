@@ -60,7 +60,7 @@ def mongo_get_user(handle):
     return get_response(find_user(handle), 200)
 
 
-@app.route('/mongo/<handle>/tweets')
+@app.route('/mongo/<handle>/tweets/')
 def mongo_get_tweets_of_user(handle):
     tweets = []
     for tweet in tweets_collection.find({'handle': handle}):
@@ -69,7 +69,7 @@ def mongo_get_tweets_of_user(handle):
     return get_response(tweets, 200)
 
 
-@app.route('/mongo/<handle>/followers')
+@app.route('/mongo/<handle>/followers/')
 def mongo_get_followers_of_user(handle):
     followers = []
     user = find_user(handle)
@@ -79,7 +79,7 @@ def mongo_get_followers_of_user(handle):
     return get_response(followers, 200)
 
 
-@app.route('/mongo/<handle>/followings')
+@app.route('/mongo/<handle>/followings/')
 def mongo_get_followings_of_user(handle):
     followings = []
     user = find_user(handle)
@@ -89,7 +89,7 @@ def mongo_get_followings_of_user(handle):
     return get_response(followings, 200)
 
 
-@app.route('/mongo/<handle>/reading_list')
+@app.route('/mongo/<handle>/reading_list/')
 def mongo_get_reading_list(handle):
     user = find_user(handle)
     tweets = []
@@ -106,7 +106,7 @@ def mongo_get_reading_list(handle):
 #####################################################
 
 
-@app.route('/mongo/users/', methods=['POST'])
+@app.route('/mongo/users/post/', methods=['POST', 'GET'])
 def mongo_add_user():
     user = get_parameters(request)
     user['token'] = hashlib.sha1(os.urandom(128)).hexdigest()
@@ -115,7 +115,7 @@ def mongo_add_user():
     return get_response(status, 201)
 
 
-@app.route('/mongo/<handle>/tweets/post', methods=['POST', 'GET'])
+@app.route('/mongo/<handle>/tweets/post/', methods=['POST', 'GET'])
 def mongo_add_tweet(handle):
     if not check_authen(handle, request):
         return get_response("", 401, True);
@@ -126,7 +126,7 @@ def mongo_add_tweet(handle):
     return get_response(status, 201)
 
 
-@app.route('/mongo/<handle>/followers/', methods=['POST'])
+@app.route('/mongo/<handle>/followers/post/', methods=['POST', 'GET'])
 def mongo_add_follower(handle):
     if not check_authen(handle, request):
         return get_response("", 401, True)
@@ -141,7 +141,7 @@ def mongo_add_follower(handle):
     return get_response(status, 201)
 
 
-@app.route('/mongo/<handle>/followers/', methods=['DELETE'])
+@app.route('/mongo/<handle>/followers/delete/', methods=['DELETE', 'GET'])
 def mongo_del_follower(handle):
     if not check_authen(handle, request):
         return get_response("", 401, True)
@@ -156,7 +156,7 @@ def mongo_del_follower(handle):
     return get_response(status, 200)
 
 
-@app.route('/mongo/<handle>/followings/', methods=['POST'])
+@app.route('/mongo/<handle>/followings/post/', methods=['POST', 'GET'])
 def mongo_add_following(handle):
     if not check_authen(handle, request):
         return get_response("", 401, True)
@@ -171,7 +171,7 @@ def mongo_add_following(handle):
     return get_response(status, 201)
 
 
-@app.route('/mongo/<handle>/followings/', methods=['DELETE'])
+@app.route('/mongo/<handle>/followings/delete/', methods=['DELETE', 'GET'])
 def mongo_del_following(handle):
     if not check_authen(handle, request):
         return get_response("", 401, True)
@@ -186,7 +186,7 @@ def mongo_del_following(handle):
     return get_response(status, 200)
 
 
-@app.route('/mongo/session', methods=['POST', 'GET'])
+@app.route('/mongo/session/', methods=['POST', 'GET'])
 def mongo_session():
     response = get_parameters(request)
     status = None
