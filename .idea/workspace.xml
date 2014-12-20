@@ -31,7 +31,7 @@
         <entry file="file://$PROJECT_DIR$/microTweet.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.7582418" vertical-offset="300" max-vertical-offset="4305">
-              <caret line="43" column="16" selection-start-line="42" selection-start-column="12" selection-end-line="43" selection-end-column="16" />
+              <caret line="43" column="35" selection-start-line="43" selection-start-column="35" selection-end-line="43" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -346,7 +346,13 @@
       <option name="project" value="LOCAL" />
       <updated>1419079051481</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="protections users">
+      <created>1419079222808</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1419079222808</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -395,7 +401,8 @@
     <MESSAGE value="Prise en charge du json en entrée" />
     <MESSAGE value="Test" />
     <MESSAGE value="Maj" />
-    <option name="LAST_COMMIT_MESSAGE" value="Maj" />
+    <MESSAGE value="protections users" />
+    <option name="LAST_COMMIT_MESSAGE" value="protections users" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -625,7 +632,7 @@
     <entry file="file://$PROJECT_DIR$/microTweet.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7582418" vertical-offset="300" max-vertical-offset="4305">
-          <caret line="43" column="16" selection-start-line="42" selection-start-column="12" selection-end-line="43" selection-end-column="16" />
+          <caret line="43" column="35" selection-start-line="43" selection-start-column="35" selection-end-line="43" selection-end-column="35" />
           <folding />
         </state>
       </provider>

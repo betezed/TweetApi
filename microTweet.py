@@ -40,8 +40,8 @@ def mongo_get_users():
         remove_follow_attributes(user)
         user['_id'] = str(user['_id'])
         if not local_config['local']:
-            users[0].pop('password', None)
-            users[0].pop('token', None)
+            user.pop('password', None)
+            user.pop('token', None)
         users.append(user)
     return get_response(users, 200)
 
