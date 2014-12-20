@@ -13,14 +13,10 @@ from pymongo import MongoClient
 
 client = MongoClient()
 from operator import itemgetter
-import flask.ext.httpauth
 from flask import Flask, request, make_response
-from itsdangerous import (TimedJSONWebSignatureSerializer
-                          as Serializer, BadSignature, SignatureExpired)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy dog'
-auth = flask.ext.httpauth.HTTPBasicAuth()
 
 
 #####################################################
@@ -43,8 +39,6 @@ def mongo_get_users():
     for user in users_collection.find():
         remove_follow_attributes(user)
         user['_id'] = str(user['_id'])
-        #user.pop('password', None)
-        #user.pop('token', None)
         users.append(user)
     return get_response(users, 200)
 
@@ -132,7 +126,7 @@ def mongo_add_tweet(handle):
 @app.route('/mongo/<handle>/followers/', methods=['POST'])
 def mongo_add_follower(handle):
     if not check_authen(handle, request):
-        return get_response("", 401, True);
+        return get_response("", 401, True)
     follower = get_parameters(request)
     follower = follower['handle']
     user = find_user(handle)
@@ -147,7 +141,7 @@ def mongo_add_follower(handle):
 @app.route('/mongo/<handle>/followers/', methods=['DELETE'])
 def mongo_del_follower(handle):
     if not check_authen(handle, request):
-        return get_response("", 401, True);
+        return get_response("", 401, True)
     follower = get_parameters(request)
     follower = follower['handle']
     user = find_user(handle)
@@ -162,7 +156,7 @@ def mongo_del_follower(handle):
 @app.route('/mongo/<handle>/followings/', methods=['POST'])
 def mongo_add_following(handle):
     if not check_authen(handle, request):
-        return get_response("", 401, True);
+        return get_response("", 401, True)
     following = get_parameters(request)
     following = following['handle']
     user = find_user(handle)
@@ -177,7 +171,7 @@ def mongo_add_following(handle):
 @app.route('/mongo/<handle>/followings/', methods=['DELETE'])
 def mongo_del_following(handle):
     if not check_authen(handle, request):
-        return get_response("", 401, True);
+        return get_response("", 401, True)
     following = get_parameters(request)
     following = following['handle']
     user = find_user(handle)
@@ -216,6 +210,9 @@ def find_user(handle, password=None):
         users.append(user)
     if len(users) != 1:
         return {'error': 'Bad Request'}
+    if not local_config['local']:
+        users[0].pop('password', None)
+        users[0].pop('token', None)
     return users[0]
 
 
