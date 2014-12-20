@@ -200,10 +200,10 @@ def mongo_session():
     else:
         return get_response(status, 401, True)
 
-
 #####################################################
 #                   UTILS METHODS                   #
 #####################################################
+
 
 def find_user(handle, password=None):
     users = []
