@@ -191,7 +191,7 @@ def mongo_session():
     response = get_parameters(request)
     status = None
     if verify_password(response['handle'], response['password']):
-        user = find_user(response['handle'])
+        user = find_user(response['handle'], None, True)
         status = str(user['token'])
         return get_response(status, 200, False, True)
     else:
@@ -202,7 +202,7 @@ def mongo_session():
 #####################################################
 
 
-def find_user(handle, password=None):
+def find_user(handle, password=None, get_token=False):
     users = []
     if password is not None:
         collection = users_collection.find({'handle': handle, 'password': password})
@@ -213,7 +213,7 @@ def find_user(handle, password=None):
         users.append(user)
     if len(users) != 1:
         return {'error': 'Bad Request'}
-    if not local_config['local']:
+    if not local_config['local'] and not get_token:
         users[0].pop('password', None)
         users[0].pop('token', None)
     return users[0]
