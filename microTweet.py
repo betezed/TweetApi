@@ -255,7 +255,7 @@ def get_parameters(content):
 
 
 def check_authen(handle, content):
-    user = find_user(handle)
+    user = find_user(handle, None, True)
     if 'error' in user.keys() or \
         'Authorization' not in content.headers.keys():
         return False
