@@ -151,12 +151,15 @@ def mongo_add_follower(handle):
     follower = get_parameters(request)
     follower = follower['handle']
     user = find_user(handle, None, True)
+    if 'error' in find_user(following, None, None).keys():
+        status = {'result': False}
+        return get_response(status, 400, True)
     user['_id'] = ObjectId(user['_id'])
     ref = {'_id': user['_id']}
     user['followers'].append({'handle': follower})
     users_collection.update(ref, user)
     status = {'result': True}
-    return get_response(status, 201)
+    return get_response(status, 201, True)
 
 
 @app.route('/mongo/<handle>/followers/delete/', methods=['DELETE', 'GET'])
@@ -166,12 +169,15 @@ def mongo_del_follower(handle):
     follower = get_parameters(request)
     follower = follower['handle']
     user = find_user(handle, None, True)
+    if 'error' in find_user(following, None, None).keys():
+        status = {'result': False}
+        return get_response(status, 400, True)
     user['_id'] = ObjectId(user['_id'])
     ref = {'_id': user['_id']}
     user['followers'].remove({'handle': follower})
     tweets_collection.update(ref, user)
     status = {'result': True}
-    return get_response(status, 200)
+    return get_response(status, 200, True)
 
 
 @app.route('/mongo/<handle>/followings/post/', methods=['POST', 'GET'])
@@ -181,12 +187,15 @@ def mongo_add_following(handle):
     following = get_parameters(request)
     following = following['handle']
     user = find_user(handle, None, True)
+    if 'error' in find_user(following, None, None).keys():
+        status = {'result': False}
+        return get_response(status, 400, True)
     user['_id'] = ObjectId(user['_id'])
     ref = {'_id': user['_id']}
     user['followings'].append({'handle': following})
     users_collection.update(ref, user)
     status = {'result': True}
-    return get_response(status, 201)
+    return get_response(status, 201, True)
 
 
 @app.route('/mongo/<handle>/followings/delete/', methods=['DELETE', 'GET'])
@@ -196,12 +205,15 @@ def mongo_del_following(handle):
     following = get_parameters(request)
     following = following['handle']
     user = find_user(handle, None, True)
+    if 'error' in find_user(following, None, None).keys():
+        status = {'result': False}
+        return get_response(status, 400, True)
     user['_id'] = ObjectId(user['_id'])
     ref = {'_id': user['_id']}
     user['followings'].remove({'handle': following})
     users_collection.update(ref, user)
     status = {'result': True}
-    return get_response(status, 200)
+    return get_response(status, 200, True)
 
 
 @app.route('/mongo/session/', methods=['POST', 'GET'])
@@ -211,7 +223,6 @@ def mongo_session():
     if verify_password(response['handle'], response['password']):
         user = find_user(response['handle'], None, True)
         status = str(user['token'])
-
         return get_response(status, 200, False, True)
     else:
         return get_response(status, 401, True)
