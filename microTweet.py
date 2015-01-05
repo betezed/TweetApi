@@ -8,6 +8,7 @@ import hashlib
 import os
 import random
 import json
+import datetime
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 
@@ -17,7 +18,6 @@ from flask import Flask, request, make_response
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy dog'
-
 
 #####################################################
 # INITIALISATION                    #
@@ -36,12 +36,30 @@ tweets_collection = db.tweets
 @app.route('/mongo/users/')
 def mongo_get_users():
     users = []
+    followings = []
+    logged_in = False
+    handle = None
+    if "Authorization" in request.headers.keys():
+	for user in users_collection.find():
+	    if check_authen(user['handle'], request):
+		handle = user['handle']
+		logged_in = True
+    if logged_in:
+        user = find_user(handle)
+        for following in user['followings']:
+            followings.append(following['handle'])
+    users = []
     for user in users_collection.find():
         remove_follow_attributes(user)
         user['_id'] = str(user['_id'])
         if not local_config['local']:
             user.pop('password', None)
             user.pop('token', None)
+	if logged_in:
+	    if user['handle'] in followings:
+		user['following'] = True
+	    else:
+		user['following'] = False
         users.append(user)
     return get_response(users, 200)
 
@@ -121,6 +139,8 @@ def mongo_add_tweet(handle):
         return get_response("", 401, True);
     tweet = get_parameters(request)
     tweet['handle'] = handle
+    now = datetime.datetime.now()
+    tweet['date'] = now.strftime("%Y/%m/%d")
     tweets_collection.insert(tweet)
     status = {'result': True}
     return get_response(status, 201)
@@ -132,7 +152,7 @@ def mongo_add_follower(handle):
         return get_response("", 401, True)
     follower = get_parameters(request)
     follower = follower['handle']
-    user = find_user(handle)
+    user = find_user(handle, None, True)
     user['_id'] = ObjectId(user['_id'])
     ref = {'_id': user['_id']}
     user['followers'].append({'handle': follower})
@@ -147,7 +167,7 @@ def mongo_del_follower(handle):
         return get_response("", 401, True)
     follower = get_parameters(request)
     follower = follower['handle']
-    user = find_user(handle)
+    user = find_user(handle, None, True)
     user['_id'] = ObjectId(user['_id'])
     ref = {'_id': user['_id']}
     user['followers'].remove({'handle': follower})
@@ -162,7 +182,7 @@ def mongo_add_following(handle):
         return get_response("", 401, True)
     following = get_parameters(request)
     following = following['handle']
-    user = find_user(handle)
+    user = find_user(handle, None, True)
     user['_id'] = ObjectId(user['_id'])
     ref = {'_id': user['_id']}
     user['followings'].append({'handle': following})
@@ -177,7 +197,7 @@ def mongo_del_following(handle):
         return get_response("", 401, True)
     following = get_parameters(request)
     following = following['handle']
-    user = find_user(handle)
+    user = find_user(handle, None, True)
     user['_id'] = ObjectId(user['_id'])
     ref = {'_id': user['_id']}
     user['followings'].remove({'handle': following})
@@ -193,6 +213,7 @@ def mongo_session():
     if verify_password(response['handle'], response['password']):
         user = find_user(response['handle'], None, True)
         status = str(user['token'])
+	
         return get_response(status, 200, False, True)
     else:
         return get_response(status, 401, True)
@@ -233,10 +254,11 @@ def get_response(content, status_code, empty_content=False, text=False):
             and 'error' in content.keys():
         status_code = 400
     if not empty_content:
-        response = make_response(json.dumps(content))
         if text:
+	    response = make_response(content)
             response.mimetype = "text/plain"
         else:
+            response = make_response(json.dumps(content))
             response.mimetype = "application/json"
     else:
         response = make_response()
@@ -260,6 +282,8 @@ def check_authen(handle, content):
         'Authorization' not in content.headers.keys():
         return False
     if content.headers["Authorization"] != "Bearer-" + user['token']:
+	print(content.headers['Authorization'])
+	print(user['token'])
         return False
     return True
 

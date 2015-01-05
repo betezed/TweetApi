@@ -1,2 +1,2 @@
 __author__ = 'betezed'
-local_config = {'local': True}
+local_config = {'local': False}
