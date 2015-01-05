@@ -6,7 +6,6 @@ __author__ = "betezed_mozafaka"
 
 import hashlib
 import os
-import random
 import json
 import datetime
 from bson.objectid import ObjectId
@@ -35,15 +34,14 @@ tweets_collection = db.tweets
 
 @app.route('/mongo/users/')
 def mongo_get_users():
-    users = []
     followings = []
     logged_in = False
     handle = None
     if "Authorization" in request.headers.keys():
-	for user in users_collection.find():
-	    if check_authen(user['handle'], request):
-		handle = user['handle']
-		logged_in = True
+        for user in users_collection.find():
+            if check_authen(user['handle'], request):
+                handle = user['handle']
+                logged_in = True
     if logged_in:
         user = find_user(handle)
         for following in user['followings']:
@@ -55,11 +53,11 @@ def mongo_get_users():
         if not local_config['local']:
             user.pop('password', None)
             user.pop('token', None)
-	if logged_in:
-	    if user['handle'] in followings:
-		user['following'] = True
-	    else:
-		user['following'] = False
+        if logged_in:
+            if user['handle'] in followings:
+                user['following'] = True
+            else:
+                user['following'] = False
         users.append(user)
     return get_response(users, 200)
 
@@ -136,7 +134,7 @@ def mongo_add_user():
 @app.route('/mongo/<handle>/tweets/post/', methods=['POST', 'GET'])
 def mongo_add_tweet(handle):
     if not check_authen(handle, request):
-        return get_response("", 401, True);
+        return get_response("", 401, True)
     tweet = get_parameters(request)
     tweet['handle'] = handle
     now = datetime.datetime.now()
@@ -213,7 +211,7 @@ def mongo_session():
     if verify_password(response['handle'], response['password']):
         user = find_user(response['handle'], None, True)
         status = str(user['token'])
-	
+
         return get_response(status, 200, False, True)
     else:
         return get_response(status, 401, True)
@@ -255,7 +253,7 @@ def get_response(content, status_code, empty_content=False, text=False):
         status_code = 400
     if not empty_content:
         if text:
-	    response = make_response(content)
+            response = make_response(content)
             response.mimetype = "text/plain"
         else:
             response = make_response(json.dumps(content))
@@ -278,12 +276,11 @@ def get_parameters(content):
 
 def check_authen(handle, content):
     user = find_user(handle, None, True)
-    if 'error' in user.keys() or \
-        'Authorization' not in content.headers.keys():
+    if 'error' in user.keys() or 'Authorization' not in content.headers.keys():
         return False
     if content.headers["Authorization"] != "Bearer-" + user['token']:
-	print(content.headers['Authorization'])
-	print(user['token'])
+        print(content.headers['Authorization'])
+        print(user['token'])
         return False
     return True
 
