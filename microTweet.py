@@ -151,7 +151,7 @@ def mongo_add_follower(handle):
     follower = get_parameters(request)
     follower = follower['handle']
     user = find_user(handle, None, True)
-    if 'error' in find_user(following, None, None).keys():
+    if 'error' in find_user(follower, None, False).keys():
         status = {'result': False}
         return get_response(status, 400, True)
     user['_id'] = ObjectId(user['_id'])
@@ -169,7 +169,7 @@ def mongo_del_follower(handle):
     follower = get_parameters(request)
     follower = follower['handle']
     user = find_user(handle, None, True)
-    if 'error' in find_user(following, None, None).keys():
+    if 'error' in find_user(follower, None, False).keys():
         status = {'result': False}
         return get_response(status, 400, True)
     user['_id'] = ObjectId(user['_id'])
@@ -187,7 +187,7 @@ def mongo_add_following(handle):
     following = get_parameters(request)
     following = following['handle']
     user = find_user(handle, None, True)
-    if 'error' in find_user(following, None, None).keys():
+    if 'error' in find_user(following, None, False).keys():
         status = {'result': False}
         return get_response(status, 400, True)
     user['_id'] = ObjectId(user['_id'])
@@ -205,7 +205,7 @@ def mongo_del_following(handle):
     following = get_parameters(request)
     following = following['handle']
     user = find_user(handle, None, True)
-    if 'error' in find_user(following, None, None).keys():
+    if 'error' in find_user(following, None, False).keys():
         status = {'result': False}
         return get_response(status, 400, True)
     user['_id'] = ObjectId(user['_id'])
