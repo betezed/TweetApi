@@ -1,0 +1,30 @@
+db.tweets.insert({
+  "handle":"Jerome",
+  "content":"La vie est un long fleuve pas très tranquille",
+  "date":"2014/12/01"
+})
+db.tweets.insert({
+  "handle":"Jerome",
+  "content":"Je mange des pommes #CestTropOuf",
+  "date":"2014/11/14"
+})
+db.tweets.insert({
+  "handle":"betezed",
+  "content":"Donnez moi le code source du monde, pour que je le change",
+  "date":"2014/10/10"
+})
+db.tweets.insert({
+  "handle":"Younes",
+  "content":"La vie c'est une boite de chocolat, en moins bon",
+  "date":"2014/09/10"
+})
+db.tweets.insert({
+  "handle":"betezed",
+  "content":"Un tiens vaut mieux que deux tu l'auras, ou pas ...",
+  "date":"2014/10/19"
+})
+db.tweets.insert({
+  "handle":"Younes",
+  "content":"Crotte de bique, j'ai perdu ma bière !",
+  "date":"2014/08/09"
+})
