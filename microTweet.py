@@ -101,6 +101,7 @@ def mongo_get_followings_of_user(handle):
     user = find_user(handle)
     for following in user['followings']:
         following = remove_follow_attributes(find_user(following['handle']))
+        following['following'] = True
         followings.append(following)
     return get_response(followings, 200)
 
@@ -126,6 +127,12 @@ def mongo_get_reading_list(handle):
 def mongo_add_user():
     user = get_parameters(request)
     user['token'] = hashlib.sha1(os.urandom(128)).hexdigest()
+    if 'password' not in user.keys():
+        user['password'] = 'test'    
+    if 'profilePicture' not in user.keys():
+        user['profilePicture'] = 'http://www.cabb01.club/wp-content/uploads/2014/12/inconnu.jpg'    
+    if 'status' not in user.keys():
+        user['status'] = 'offline'
     users_collection.insert(user)
     status = {'result': True}
     return get_response(status, 201)
@@ -190,6 +197,10 @@ def mongo_add_following(handle):
     if 'error' in find_user(following, None, False).keys():
         status = {'result': False}
         return get_response(status, 400, True)
+    for c_following in user['followings']:
+        if c_following['handle'] == following:
+            status = {'result': False}
+            return get_response(status, 409, True)
     user['_id'] = ObjectId(user['_id'])
     ref = {'_id': user['_id']}
     user['followings'].append({'handle': following})
