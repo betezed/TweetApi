@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 from config import local_config
 
-__author__ = "betezed_mozafaka"
 
 import hashlib
 import os
@@ -16,11 +15,6 @@ from operator import itemgetter
 from flask import Flask, request, make_response
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy dog'
-
-#####################################################
-# INITIALISATION                    #
-#####################################################
 
 db = client.tweetDB
 users_collection = db.users
@@ -85,7 +79,7 @@ def mongo_get_tweets_of_user(handle):
     return get_response(tweets, 200)
 
 
-@app.route('/mongo/<handle>/followers/')
+@app.route('/mongo/<handle>/followers')
 def mongo_get_followers_of_user(handle):
     followers = []
     user = find_user(handle)
@@ -95,7 +89,7 @@ def mongo_get_followers_of_user(handle):
     return get_response(followers, 200)
 
 
-@app.route('/mongo/<handle>/followings/')
+@app.route('/mongo/<handle>/followings')
 def mongo_get_followings_of_user(handle):
     followings = []
     user = find_user(handle)
@@ -106,7 +100,7 @@ def mongo_get_followings_of_user(handle):
     return get_response(followings, 200)
 
 
-@app.route('/mongo/<handle>/reading_list/')
+@app.route('/mongo/<handle>/reading_list')
 def mongo_get_reading_list(handle):
     user = find_user(handle)
     tweets = []
